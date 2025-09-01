@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 interface Alert {
   id: number;
@@ -26,10 +26,10 @@ interface AlertsProps {
 const Alerts: React.FC<AlertsProps> = ({ products }) => {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [selectedProductId, setSelectedProductId] = useState('');
-  const [targetPrice, setTargetPrice] = useState('');
-  const [alertType, setAlertType] = useState('below');
-  const [userEmail, setUserEmail] = useState('');
+  const [selectedProductId, setSelectedProductId] = useState("");
+  const [targetPrice, setTargetPrice] = useState("");
+  const [alertType, setAlertType] = useState("below");
+  const [userEmail, setUserEmail] = useState("");
 
   useEffect(() => {
     fetchAlerts();
@@ -37,11 +37,11 @@ const Alerts: React.FC<AlertsProps> = ({ products }) => {
 
   const fetchAlerts = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/alerts');
+      const response = await fetch("http://localhost:3001/api/alerts");
       const data = await response.json();
       setAlerts(data);
     } catch (error) {
-      console.error('Error fetching alerts:', error);
+      console.error("Error fetching alerts:", error);
     }
   };
 
@@ -51,10 +51,10 @@ const Alerts: React.FC<AlertsProps> = ({ products }) => {
     if (!selectedProductId || !targetPrice) return;
 
     try {
-      const response = await fetch('http://localhost:3001/api/alerts', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3001/api/alerts", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           productId: parseInt(selectedProductId),
@@ -66,56 +66,62 @@ const Alerts: React.FC<AlertsProps> = ({ products }) => {
 
       if (response.ok) {
         setShowCreateForm(false);
-        setSelectedProductId('');
-        setTargetPrice('');
-        setUserEmail('');
+        setSelectedProductId("");
+        setTargetPrice("");
+        setUserEmail("");
         fetchAlerts();
       } else {
-        alert('Error creating alert');
+        alert("Error creating alert");
       }
     } catch (error) {
-      console.error('Error creating alert:', error);
-      alert('Error creating alert');
+      console.error("Error creating alert:", error);
+      alert("Error creating alert");
     }
   };
 
   const deleteAlert = async (alertId: number) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/alerts/${alertId}`, {
-        method: 'DELETE',
-      });
+      const response = await fetch(
+        `http://localhost:3001/api/alerts/${alertId}`,
+        {
+          method: "DELETE",
+        },
+      );
 
       if (response.ok) {
         fetchAlerts();
       } else {
-        alert('Error deleting alert');
+        alert("Error deleting alert");
       }
     } catch (error) {
-      console.error('Error deleting alert:', error);
-      alert('Error deleting alert');
+      console.error("Error deleting alert:", error);
+      alert("Error deleting alert");
     }
   };
 
   const toggleAlert = async (alertId: number, isActive: boolean) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/alerts/${alertId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `http://localhost:3001/api/alerts/${alertId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            isActive: !isActive,
+          }),
         },
-        body: JSON.stringify({
-          isActive: !isActive,
-        }),
-      });
+      );
 
       if (response.ok) {
         fetchAlerts();
       } else {
-        alert('Error updating alert');
+        alert("Error updating alert");
       }
     } catch (error) {
-      console.error('Error updating alert:', error);
-      alert('Error updating alert');
+      console.error("Error updating alert:", error);
+      alert("Error updating alert");
     }
   };
 
@@ -127,7 +133,7 @@ const Alerts: React.FC<AlertsProps> = ({ products }) => {
         onClick={() => setShowCreateForm(!showCreateForm)}
         className="create-alert-btn"
       >
-        {showCreateForm ? 'Cancel' : 'Create New Alert'}
+        {showCreateForm ? "Cancel" : "Create New Alert"}
       </button>
 
       {showCreateForm && (
@@ -180,7 +186,9 @@ const Alerts: React.FC<AlertsProps> = ({ products }) => {
             />
           </div>
 
-          <button type="submit" className="submit-btn">Create Alert</button>
+          <button type="submit" className="submit-btn">
+            Create Alert
+          </button>
         </form>
       )}
 
@@ -189,7 +197,9 @@ const Alerts: React.FC<AlertsProps> = ({ products }) => {
           <div key={alert.id} className="alert-item">
             <div className="alert-info">
               <h4>{alert.product_title}</h4>
-              <p>{alert.platform_name} - {alert.external_id}</p>
+              <p>
+                {alert.platform_name} - {alert.external_id}
+              </p>
               <p>
                 Alert when price goes {alert.alert_type} ${alert.target_price}
               </p>
@@ -198,9 +208,9 @@ const Alerts: React.FC<AlertsProps> = ({ products }) => {
             <div className="alert-actions">
               <button
                 onClick={() => toggleAlert(alert.id, alert.is_active)}
-                className={`toggle-btn ${alert.is_active ? 'active' : 'inactive'}`}
+                className={`toggle-btn ${alert.is_active ? "active" : "inactive"}`}
               >
-                {alert.is_active ? 'Active' : 'Inactive'}
+                {alert.is_active ? "Active" : "Inactive"}
               </button>
               <button
                 onClick={() => deleteAlert(alert.id)}
