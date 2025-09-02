@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
-import PriceChart from './PriceChart'
-import Alerts from './Alerts'
-import './App.css'
+import { useState, useEffect } from "react";
+import PriceChart from "./PriceChart";
+import Alerts from "./Alerts";
+import "./App.css";
 
 interface Product {
   id: number;
@@ -31,6 +31,7 @@ interface SearchResult {
   image_url: string | null;
   url: string | null;
   platform: string;
+  description?: string;
 }
 
 function App() {
@@ -38,11 +39,11 @@ function App() {
   const [platforms, setPlatforms] = useState<Platform[]>([]);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedPlatform, setSelectedPlatform] = useState('');
-  const [externalId, setExternalId] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedPlatform, setSelectedPlatform] = useState("");
+  const [externalId, setExternalId] = useState("");
   const [showSearch, setShowSearch] = useState(false);
-  const [showCharts, setShowCharts] = useState<{[key: number]: boolean}>({});
+  const [showCharts, setShowCharts] = useState<{ [key: number]: boolean }>({});
 
   useEffect(() => {
     fetchProducts();
@@ -51,11 +52,11 @@ function App() {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/products');
+      const response = await fetch("http://localhost:3001/api/products");
       const data = await response.json();
       setProducts(data);
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error("Error fetching products:", error);
     } finally {
       setLoading(false);
     }
@@ -63,11 +64,13 @@ function App() {
 
   const fetchPlatforms = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/products/platforms');
+      const response = await fetch(
+        "http://localhost:3001/api/products/platforms",
+      );
       const data = await response.json();
       setPlatforms(data);
     } catch (error) {
-      console.error('Error fetching platforms:', error);
+      console.error("Error fetching platforms:", error);
     }
   };
 
@@ -76,36 +79,38 @@ function App() {
     if (!searchQuery.trim()) return;
 
     try {
-      const response = await fetch(`http://localhost:3001/api/products/search?q=${encodeURIComponent(searchQuery)}&limit=10`);
+      const response = await fetch(
+        `http://localhost:3001/api/products/search?q=${encodeURIComponent(searchQuery)}&limit=10`,
+      );
       const data = await response.json();
       setSearchResults(data);
       setShowSearch(true);
     } catch (error) {
-      console.error('Error searching products:', error);
+      console.error("Error searching products:", error);
     }
   };
 
   const addProduct = async (platform: string, externalId: string) => {
     try {
-      const response = await fetch('http://localhost:3001/api/products', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3001/api/products", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ platform, externalId }),
       });
 
       if (response.ok) {
-        setSearchQuery('');
-        setExternalId('');
+        setSearchQuery("");
+        setExternalId("");
         setShowSearch(false);
         fetchProducts();
       } else {
-        alert('Error adding product');
+        alert("Error adding product");
       }
     } catch (error) {
-      console.error('Error adding product:', error);
-      alert('Error adding product');
+      console.error("Error adding product:", error);
+      alert("Error adding product");
     }
   };
 
@@ -117,20 +122,20 @@ function App() {
   };
 
   const toggleChart = (productId: number) => {
-    setShowCharts(prev => ({
+    setShowCharts((prev) => ({
       ...prev,
-      [productId]: !prev[productId]
+      [productId]: !prev[productId],
     }));
   };
 
   const fetchPrices = async () => {
     try {
-      await fetch('http://localhost:3001/api/fetch-prices', {
-        method: 'POST',
+      await fetch("http://localhost:3001/api/fetch-prices", {
+        method: "POST",
       });
       fetchProducts();
     } catch (error) {
-      console.error('Error fetching prices:', error);
+      console.error("Error fetching prices:", error);
     }
   };
 
@@ -196,11 +201,16 @@ function App() {
                 <div className="product-info">
                   <h3>{result.title}</h3>
                   <p className="platform">{result.platform}</p>
+                  {result.description && (
+                    <p className="description">{result.description}</p>
+                  )}
                   <p className="price">
                     {result.currency} {result.price}
                   </p>
                   <button
-                    onClick={() => addProduct(result.platform, result.external_id)}
+                    onClick={() =>
+                      addProduct(result.platform, result.external_id)
+                    }
                     className="add-btn"
                   >
                     Add to Tracker
@@ -238,12 +248,15 @@ function App() {
                 onClick={() => toggleChart(product.id)}
                 className="chart-btn"
               >
-                {showCharts[product.id] ? 'Hide Chart' : 'Show Price History'}
+                {showCharts[product.id] ? "Hide Chart" : "Show Price History"}
               </button>
             </div>
             {showCharts[product.id] && (
               <div className="chart-container">
-                <PriceChart productId={product.id} productTitle={product.title} />
+                <PriceChart
+                  productId={product.id}
+                  productTitle={product.title}
+                />
               </div>
             )}
           </div>
@@ -256,4 +269,4 @@ function App() {
   );
 }
 
-export default App
+export default App;

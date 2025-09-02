@@ -1,9 +1,3 @@
--- Create database
-CREATE DATABASE IF NOT EXISTS amazon_tracker;
-
--- Use database
-\c amazon_tracker;
-
 -- Platforms table
 CREATE TABLE IF NOT EXISTS platforms (
   id SERIAL PRIMARY KEY,
@@ -50,7 +44,9 @@ INSERT INTO platforms (name, base_url) VALUES
   ('eBay', 'https://www.ebay.com'),
   ('Walmart', 'https://www.walmart.com'),
   ('Best Buy', 'https://www.bestbuy.com'),
-  ('Target', 'https://www.target.com')
+  ('Target', 'https://www.target.com'),
+  ('Qwen Coder', 'https://www.qwencoder.com'),
+  ('Anthropic AI', 'https://anthropic-marketplace.ai')
 ON CONFLICT (name) DO NOTHING;
 
 -- Index for faster queries
